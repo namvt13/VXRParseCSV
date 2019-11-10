@@ -1,5 +1,6 @@
 const fs = require("fs");
 const moment = require("moment");
+const {Parser} = require("json2csv");
 
 const path = process.argv[2] || "/home/thanos/Downloads/sharing/";
 
@@ -97,7 +98,7 @@ fileArr.forEach((f) => {
 Object.keys(userObj).forEach((u) => {
 	const userCode = userObj[u].code;
 	const userSharings = sharingsPerWeek[userCode];
-ơi
+
 	let numberOfQualifiedSharings = 0;
 	if (userSharings) {
 		Object.keys(userSharings).forEach((weekNumber) => {
@@ -122,5 +123,13 @@ Object.keys(userObj).forEach((u) => {
 	});
 });
 
-console.log("Result: ");
-console.log(userObj);
+try {
+	const parser = new Parser();
+	const csv = parser.parse(Object.values(userObj));
+
+	fs.writeFileSync(path+'slack.csv', csv);
+	console.log("Conversion done!");
+} catch (err) {
+	console.log(8888);
+	console.error(err);
+}
